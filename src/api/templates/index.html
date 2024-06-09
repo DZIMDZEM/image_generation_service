@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DCGAN Image Generator</title>
+</head>
+<body>
+    <h1>Generated Image</h1>
+    <form action="/" method="get">
+        <label for="seed">Seed:</label>
+        <input type="text" id="seed" name="seed" placeholder="Enter a seed">
+        <button type="submit">Generate</button>
+    </form>
+    <img src="{{ image_url }}" alt="DCGAN Generated Image">
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Generated Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input, button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Generated Image</h1>
+<form id="generateForm" action="/display" method="post">
+    <div>
+        <label for="random_seed">Random Seed:</label>
+        <input type="number" id="random_seed" name="random_seed" value="{{ random_seed }}" required>
+    </div>
+    <div>
+        <label for="number_steps">Style Seed:</label>
+        <input type="range" id="number_steps" name="number_steps" min="1" max="24" value="{{ number_steps }}">
+        <span id="steps_value">{{ number_steps }}</span> <!-- Display for slider value -->
+    </div>
+    <button type="button" onclick="updateForm()">Generate</button>
+</form>
+<img src="data:image/jpeg;base64,{{ image_data }}" alt="Generated Image">
+<script>
+    // JavaScript for handling slider value display
+    const slider = document.getElementById('number_steps');
+    const output = document.getElementById('steps_value');
+    output.oninput = function () {
+        output.textContent = output.value;
+    }
+    slider.oninput = function () {
+        slider.textContent = slider.value;
+    }
+
+    // JavaScript to handle form submission as JSON
+    function updateForm() {
+        // event.preventDefault(); // Prevent the default form submission
+        const randomSeed = document.getElementById('random_seed').value;
+        const numberSteps = document.getElementById('number_steps').value;
+
+        fetch('display', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'  // Ensure the server knows that client expects JSON
+            },
+            body: JSON.stringify({
+                random_seed: parseInt(randomSeed, 10),
+                number_steps: parseInt(numberSteps, 10)
+            })
+        }).then(response => response.text())
+            .then(data => {
+                document.body.innerHTML = ""
+                document.write(data)
+            }).catch(error => console.error('Error:', error));
+
+    }
+</script>
+</body>
+</html>

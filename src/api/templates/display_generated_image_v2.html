@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Generated Image</title>
+    <style>
+        /* Global body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+            margin: 20px;
+            justify-content: center; /* Centers horizontally in the flex container */
+            align-items: center; /* Centers vertically in the flex container */
+        }
+
+        /* Form styling */
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 20%;
+
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+
+            margin-bottom: 15px;
+        }
+
+        /* Label styling */
+        label {
+            display: block;
+            margin-bottom: 15px;
+            color: #666;
+
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Input and range slider styling */
+        input[type="number"], input[type="range"] {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+
+            margin-bottom: 15px;
+
+        }
+
+        /* Button styling */
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+
+            margin-bottom: 15px;
+
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+
+        /* Utility classes for margin and padding */
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .p-20 {
+            padding: 20px;
+        }
+
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 20%;
+            /*height: auto; !* This maintains the aspect ratio *!*/
+            /*justify-content: center;*/
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Generate Cat Image</h1>
+<form id="generateForm" action="/display" method="post">
+    <div>
+        <label for="random_seed">Random Seed:</label>
+        <input type="number" id="random_seed" name="random_seed" value="{{ random_seed }}" required>
+    </div>
+    <div>
+        <label for="number_steps">Style Seed:</label>
+        <input type="range" id="number_steps" name="number_steps" min="1" max="24" value="{{ number_steps }}">
+        <span id="steps_value">{{ number_steps }}</span> <!-- Display for slider value -->
+    </div>
+    <button type="button" onclick="updateForm()">Generate</button>
+</form>
+<img src="data:image/jpeg;base64,{{ image_data }}" alt="Generated Image">
+<script>
+    // JavaScript for handling slider value display
+    const slider = document.getElementById('number_steps');
+    const output = document.getElementById('steps_value');
+    output.oninput = function () {
+        output.textContent = output.value;
+    }
+    slider.oninput = function () {
+        slider.textContent = slider.value;
+    }
+
+    // JavaScript to handle form submission as JSON
+    function updateForm() {
+        // event.preventDefault(); // Prevent the default form submission
+        const randomSeed = document.getElementById('random_seed').value;
+        const numberSteps = document.getElementById('number_steps').value;
+
+        fetch('display', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'  // Ensure the server knows that client expects JSON
+            },
+            body: JSON.stringify({
+                random_seed: parseInt(randomSeed, 10),
+                number_steps: parseInt(numberSteps, 10)
+            })
+        }).then(response => response.text())
+            .then(data => {
+                document.body.innerHTML = ""
+                document.write(data)
+            }).catch(error => console.error('Error:', error));
+
+    }
+</script>
+</body>
+</html>

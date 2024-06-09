@@ -13,4 +13,4 @@ class EnvironmentHealthTest(unittest.TestCase):
             import numpy
 
         with then():
-            assert_that(numpy.__version__, greater_than_or_equal_to('1.21.0'))
+            assert_that(numpy.__version__, greater_than_or_equal_to('1.26.4'))
